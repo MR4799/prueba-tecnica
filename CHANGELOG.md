@@ -1,2 +1,5 @@
-<!-- Merge de la rama de usuarios hacia la rama dev -->
+<!-- Merge de la rama de users hacia la rama dev -->
 https://github.com/MR4799/prueba-tecnica/pull/1
+
+<!-- Merge de la rama de trucks hacia la rama dev -->
+https://github.com/MR4799/prueba-tecnica/pull/2

@@ -1,0 +1,10 @@
+import express from 'express';
+import authentication from '../middlewares/auth.middleware';
+import { createLocation, deleteLocation, findOneLocation, getAllLocations, updateLocation } from '../controllers/locations.controllers';
+const locations = express.Router();
+locations.get('/all', getAllLocations);
+locations.get('/one/:id', findOneLocation);
+locations.post('/add',createLocation);
+locations.put('/update/:id', updateLocation);
+locations.delete('/delete/:id', deleteLocation);
+export default locations;
