@@ -17,8 +17,11 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.14.0",
+    "@googlemaps/places": "^1.8.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
