@@ -2,6 +2,7 @@ import express from 'express';
 import app from "./models/server";
 import './database/connect';
 import router from './routes/users.routes';
+import trucks from './routes/trucks.routes';
 app.use(express.json())
 const PORT = process.env.PORT
 app.get('/', (req, res) =>{
@@ -9,6 +10,7 @@ app.get('/', (req, res) =>{
     res.send('API running')
 })
 app.use('/users', router);
+app.use('/trucks', trucks);
 app.listen(PORT, () =>{
     console.log(`Server is running on port ${PORT}`);
     

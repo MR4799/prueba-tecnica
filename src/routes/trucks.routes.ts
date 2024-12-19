@@ -1,0 +1,10 @@
+import express from 'express';
+import authentication from '../middlewares/auth.middleware';
+import { createTruck, deleteTruck, findOneTruck, getAllTrucks, updateTruck } from '../controllers/trucks.controllers';
+const trucks = express.Router();
+trucks.get('/all', authentication, getAllTrucks);
+trucks.get('/one/:id', authentication, findOneTruck);
+trucks.post('/add', authentication, createTruck);
+trucks.put('/update/:id', authentication, updateTruck);
+trucks.delete('/delete/:id', authentication, deleteTruck);
+export default trucks;

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import User from "../schemas/users";
-// import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { createToken } from "../utils/createToken";
