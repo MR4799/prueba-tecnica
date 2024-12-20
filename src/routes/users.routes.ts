@@ -1,0 +1,11 @@
+import express from 'express';
+import { createUser, deleteUser, findOneUser, getAllUsers, login, updateUser } from '../controllers/users.controllers';
+import authentication from '../middlewares/auth.middleware';
+const users = express.Router();
+users.get('/all', authentication, getAllUsers);
+users.get('/one', authentication, findOneUser);
+users.post('/signup', createUser);
+users.put('/update', authentication, updateUser);
+users.post('/login', login);
+users.delete('/delete/:id', authentication, deleteUser);
+export default users;
