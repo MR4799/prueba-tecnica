@@ -10,8 +10,9 @@ async function getAllLocations(_req: Request, res: Response): Promise<Response |
         const locations = await Location.find().exec();
         if (locations.length === 0) {
             return res.status(400).json({ message: "Without locations", locations, });
+        }else{
+            return res.status(200).json({ message: "Locations successfully obtained", locations, });
         }
-        return res.status(200).json({ message: "Locations successfully obtained", locations, });
     } catch (error) {
         errorMessage(_req, res, error);
     }
@@ -20,8 +21,11 @@ async function findOneLocation(req: Request, res: Response): Promise<Response | 
     try {
         const _id = req.params.id;
         const location = await Location.findById(_id).exec();
-        WithoutLocations(req, res, location);
-        return res.status(200).json({ message: "Location found", location, });
+        if (location === null) {
+            WithoutLocations(req, res, location);
+        }else{
+            return res.status(200).json({ message: "Location found", location, });
+        }
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -60,11 +64,13 @@ async function updateLocation(req: Request, res: Response): Promise<Response | a
     try {
         const _id = req.params.id;
         const location = await Location.findById(_id).exec();
-        WithoutLocations(req, res, location);
-        const place_id = req.body.place_id;
-        const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${place_id}&key=${process.env.MAPS}`;
-        await axios.get(url)
-        .then(async (response) =>{
+        if (location === null) {
+            WithoutLocations(req, res, location);
+        }else{
+            const place_id = req.body.place_id;
+            const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${place_id}&key=${process.env.MAPS}`;
+            await axios.get(url)
+            .then(async (response) =>{
                 const placeDetails = response.data.result;
                 const address = placeDetails.address_components[0].long_name + ", " +  placeDetails.address_components[1].long_name + ", " +  placeDetails.address_components[2].long_name;
                 const latitude: number = placeDetails.geometry.location.lat;
@@ -75,6 +81,7 @@ async function updateLocation(req: Request, res: Response): Promise<Response | a
             .catch((error) =>{
                 return res.status(200).json({ message: "Place doesn´t exist", error, });
             });
+        }
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -82,9 +89,11 @@ async function updateLocation(req: Request, res: Response): Promise<Response | a
 async function deleteLocation(req: Request, res: Response): Promise<Response | any> {
     try {
         const _id = req.params.id;
-        const location = await Location.findByIdAndDelete(_id);
-        WithoutLocations(req, res, location);
-        return res.status(200).json({ message: "Location successfully deleted", _id, });
+        const location = await Location.findByIdAndDelete(_id);if (location === null) {
+            WithoutLocations(req, res, location);
+        }else{
+            return res.status(200).json({ message: "Location successfully deleted", _id, });
+        }
     } catch (error) {
         errorMessage(req, res, error);
     }

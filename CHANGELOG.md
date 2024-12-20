@@ -9,3 +9,6 @@ https://github.com/MR4799/prueba-tecnica/pull/3
 
 #Merge de la rama de orders hacia la rama dev
 https://github.com/MR4799/prueba-tecnica/pull/4
+
+#Merge de la rama dev hacia la rama master
+https://github.com/MR4799/prueba-tecnica/pull/5
