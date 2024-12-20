@@ -1,0 +1,11 @@
+import express from 'express';
+import { createOrder, deleteOrder, findOneOrder, getAllOrders, updateOrder, updateOrderStatus } from '../controllers/orders.controllers';
+import authentication from '../middlewares/auth.middleware';
+const orders = express.Router();
+orders.get('/all', getAllOrders);
+orders.get('/one/:id', findOneOrder);
+orders.post('/add', authentication, createOrder);
+orders.put('/update/:id', authentication, updateOrder);
+orders.put('/updateStatus/:id', authentication, updateOrderStatus);
+orders.delete('/delete/:id', authentication, deleteOrder);
+export default orders;
