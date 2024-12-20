@@ -12,3 +12,6 @@ https://github.com/MR4799/prueba-tecnica/pull/4
 
 #Merge de la rama dev hacia la rama master
 https://github.com/MR4799/prueba-tecnica/pull/5
+
+#Merge de la rama dev hacia la rama master, arreglando bugs
+https://github.com/MR4799/prueba-tecnica/pull/6
