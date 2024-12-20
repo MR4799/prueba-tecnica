@@ -3,13 +3,14 @@ import errorMessage from "../utils/errorMesage";
 import Order from "../schemas/orders";
 import Truck from "../schemas/trucks";
 import Location from "../schemas/locations";
+import { WithoutOrders } from "../utils/commonResponses";
 async function getAllOrders(_req: Request, res: Response): Promise<Response | any> {
     try {
         const orders = await Order.find().exec();
         if (orders.length === 0) {
             return res.status(400).json({ message: "Without orders", orders, });
         }
-        return res.status(200).json({ message: "Orders obtained successfully", orders, });
+        return res.status(200).json({ message: "Orders successfully obtained", orders, });
     } catch (error) {
         errorMessage(_req, res, error);
     }
@@ -54,7 +55,7 @@ async function createOrder(req: Request, res: Response): Promise<Response | any>
             dropoff,
         })
         await newOrder.save();
-        return res.status(200).json({ message: "Order created successfully", newOrder, });
+        return res.status(200).json({ message: "Order successfully created", newOrder, });
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -63,10 +64,8 @@ async function findOneOrder(req: Request, res: Response): Promise<Response | any
     try {
         const _id = req.params.id;
         const order = await Order.findById(_id).exec();
-        if (order === null) {
-            return res.status(400).json({ message: "Order doesn´t exist", order, });
-        }
-        return res.status(200).json({ message: "Order obtained successfully", order, });
+        WithoutOrders(req, res, order);
+        return res.status(200).json({ message: "Order found", order, });
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -75,9 +74,7 @@ async function updateOrder(req: Request, res: Response): Promise<Response | any>
     try {
         const _id = req.params.id;
         const order = await Order.findById(_id).exec();
-        if (order === null) {
-            return res.status(400).json({ message: "Order doesn´t exist", order, });
-        }
+        WithoutOrders(req, res, order);
         if (req.body.truck !== undefined) {
             const truck: string = req.body.truck;
             if (truck.length !== 24) {
@@ -112,7 +109,7 @@ async function updateOrder(req: Request, res: Response): Promise<Response | any>
             return res.status(400).json({ message: "Pickup and dropoff must be different", });
         }
         const updatedOrder = await Order.findByIdAndUpdate(_id, {user: req.cookies._id, $set: req.body},{ new: true });
-        return res.status(200).json({ message: "Order updated successfully", updatedOrder, });
+        return res.status(200).json({ message: "Order successfully updated", updatedOrder, });
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -122,7 +119,7 @@ async function updateOrderStatus(req: Request, res: Response): Promise<Response 
         const _id: string = req.params.id;
         const order = await Order.findById(_id).exec();
         if (order === null) {
-            return res.status(400).json({ message: "Order doesn´t exist", order, });
+            return res.status(200).json({ message: "Order doesn´t exist", order, });
         }
         if (order.status === 'created') {
             const newStatus = await Order.findByIdAndUpdate(_id, {status: 'in transit'}, {new: true});
@@ -133,7 +130,7 @@ async function updateOrderStatus(req: Request, res: Response): Promise<Response 
             return res.status(200).json({ message: "Order status updated", newStatus, });
         }
         if (order.status === 'completed') {
-            return res.status(200).json({ message: "Order has completed yet", });
+            return res.status(200).json({ message: "Order has already been completed", });
         }
     } catch (error) {
         errorMessage(req, res, error);
@@ -143,10 +140,8 @@ async function deleteOrder(req: Request, res: Response): Promise<Response | any>
     try {
         const _id = req.params.id;
         const order = await Order.findByIdAndDelete(_id);
-        if (order === null) {
-            return res.status(400).json({ message: "Order doesn´t exist", order, });
-        }
-        return res.status(200).json({ message: "Order deleted successfully", _id, });
+        WithoutOrders(req, res, order);
+        return res.status(200).json({ message: "Order successfully deleted", _id, });
     } catch (error) {
         errorMessage(req, res, error);
     }

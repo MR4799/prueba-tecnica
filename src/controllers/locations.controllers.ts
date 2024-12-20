@@ -3,6 +3,7 @@ import Location from "../schemas/locations";
 import dotenv from 'dotenv';
 import errorMessage from "../utils/errorMesage";
 import axios from 'axios';
+import { WithoutLocations } from "../utils/commonResponses";
 dotenv.config();
 async function getAllLocations(_req: Request, res: Response): Promise<Response | any> {
     try {
@@ -10,7 +11,7 @@ async function getAllLocations(_req: Request, res: Response): Promise<Response |
         if (locations.length === 0) {
             return res.status(400).json({ message: "Without locations", locations, });
         }
-        return res.status(200).json({ message: "Locations obtained successfully", locations, });
+        return res.status(200).json({ message: "Locations successfully obtained", locations, });
     } catch (error) {
         errorMessage(_req, res, error);
     }
@@ -19,10 +20,8 @@ async function findOneLocation(req: Request, res: Response): Promise<Response | 
     try {
         const _id = req.params.id;
         const location = await Location.findById(_id).exec();
-        if (location === null) {
-            return res.status(400).json({ message: "Location doesn´t exists", location, });
-        }
-        return res.status(200).json({ message: "Location obtained successfully", location, });
+        WithoutLocations(req, res, location);
+        return res.status(200).json({ message: "Location found", location, });
     } catch (error) {
         errorMessage(req, res, error);
     }
@@ -48,7 +47,7 @@ async function createLocation(req: Request, res: Response): Promise<Response | a
                     longitude,
                 });
                 await newLocation.save(); 
-                return res.status(200).json({ message: "Location created successfully", newLocation, });   
+                return res.status(200).json({ message: "Location successfully created", newLocation, });   
             })
             .catch((error) =>{
                 return res.status(200).json({ message: "Place doesn´t exist", error, });
@@ -61,9 +60,7 @@ async function updateLocation(req: Request, res: Response): Promise<Response | a
     try {
         const _id = req.params.id;
         const location = await Location.findById(_id).exec();
-        if (location === null) {
-            return res.status(400).json({ message: "Location doesn´t exist", location, });
-        }
+        WithoutLocations(req, res, location);
         const place_id = req.body.place_id;
         const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${place_id}&key=${process.env.MAPS}`;
         await axios.get(url)
@@ -73,7 +70,7 @@ async function updateLocation(req: Request, res: Response): Promise<Response | a
                 const latitude: number = placeDetails.geometry.location.lat;
                 const longitude: number = placeDetails.geometry.location.lng;
                 const updatedLocation = await Location.findByIdAndUpdate(_id, {address, place_id, latitude, longitude}, { new: true });
-                return res.status(200).json({ message: "Location updated successfully", updatedLocation, });   
+                return res.status(200).json({ message: "Location successfully updated", updatedLocation, });   
             })
             .catch((error) =>{
                 return res.status(200).json({ message: "Place doesn´t exist", error, });
@@ -86,10 +83,8 @@ async function deleteLocation(req: Request, res: Response): Promise<Response | a
     try {
         const _id = req.params.id;
         const location = await Location.findByIdAndDelete(_id);
-        if (location === null) {
-            return res.status(400).json({ message: "Location doesn´t exist", location, });
-        }
-        return res.status(200).json({ message: "Location deleted successfully", _id, });
+        WithoutLocations(req, res, location);
+        return res.status(200).json({ message: "Location successfully deleted", _id, });
     } catch (error) {
         errorMessage(req, res, error);
     }
